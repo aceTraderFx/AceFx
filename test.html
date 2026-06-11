@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>连通测试 | 访问正常</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f4ff 0%, #d9e2fa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            padding: 1.5rem;
+        }
+
+        .test-card {
+            max-width: 680px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 3rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .status-header {
+            background: #1e2b3c;
+            padding: 1.2rem 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .badge {
+            background: #2c9f6e;
+            border-radius: 100px;
+            padding: 0.3rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge::before {
+            content: "✓";
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .status-header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .content {
+            padding: 2rem 2rem 2.2rem;
+        }
+
+        .check-item {
+            background: #f8fafc;
+            border-radius: 1.8rem;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.2rem;
+            border-left: 6px solid #2c9f6e;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: transform 0.1s;
+        }
+
+        .check-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .check-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+            color: #0f2b3b;
+        }
+
+        .check-desc {
+            color: #2c4a5e;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-top: 6px;
+            word-break: break-word;
+        }
+
+        .timestamp {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: #eef2f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 0.6rem;
+            color: #1e4a6b;
+        }
+
+        .success-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #2c9f6e20;
+            border-radius: 40px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1b6e4a;
+            margin-left: 0.5rem;
+        }
+
+        .footer-note {
+            border-top: 1px solid #e2edf7;
+            margin-top: 1.8rem;
+            padding-top: 1.2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #5c7f8c;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 1.5rem;
+            }
+            .status-header {
+                padding: 1rem 1.5rem;
+            }
+            .check-item {
+                padding: 1rem 1.2rem;
+            }
+        }
+
+        button {
+            background: none;
+            border: none;
+            font: inherit;
+            cursor: pointer;
+            color: #2c6e9e;
+            text-decoration: underline;
+            font-size: 0.75rem;
+        }
+        button:hover {
+            color: #0f466b;
+        }
+    </style>
+</head>
+<body>
+<div class="test-card" id="app">
+    <div class="status-header">
+        <h1>📡 连通性测试</h1>
+        <div class="badge">服务可达 · 正常响应</div>
+    </div>
+    <div class="content">
+        <div class="check-item">
+            <div class="check-title">
+                🌐 HTTP / HTTPS 传输
+                <span class="success-mark">成功</span>
+            </div>
+            <div class="check-desc">
+                当前页面通过 <span id="protocolDisplay">安全连接</span> 加载，资源解析正常，无阻断。
+            </div>
+        </div>
+
+        <div class="check-item">
+            <div class="check-title">
+                🧭 DNS & 路由解析
+                <span class="success-mark">成功</span>
+            </div>
+            <div class="check-desc">
+                域名/地址解析正常，页面到达服务器并返回完整内容。<br>
+                <span id="hostInfo" class="timestamp"></span>
+            </div>
+        </div>
+
+        <div class="check-item">
+            <div class="check-title">
+                ⚡ 动态时间戳验证
+                <span class="success-mark">实时</span>
+            </div>
+            <div class="check-desc">
+                服务器生成时间 + 客户端渲染验证 &nbsp;→&nbsp;
+                <strong id="liveTimestamp" class="timestamp">--:--:--</strong>
+                <button id="refreshTimeBtn" aria-label="刷新时间戳">⟳ 刷新</button>
+            </div>
+            <div class="check-desc" style="margin-top: 8px; font-size:0.85rem">
+                ✅ 表示本次请求与响应均正常，JavaScript 执行环境可用。
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <span>🔌 网络测试页面 | 轻量验证连通性</span>
+            <span>🕘 本地/远端均可访问</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 立即执行，确保所有动态数据显示
+        // 1. 显示协议信息
+        const protocolElem = document.getElementById('protocolDisplay');
+        if (protocolElem) {
+            const isHttps = window.location.protocol === 'https:';
+            protocolElem.innerText = isHttps ? '🔒 HTTPS (加密安全)' : '🌐 HTTP (明文传输)';
+            if (!isHttps) {
+                // 不加额外样式警告，仅展示事实，但依然正常
+                protocolElem.style.opacity = '0.9';
+            }
+        }
+
+        // 2. 显示主机信息 + 当前访问的完整地址 (用于DNS测试依据)
+        const hostInfoElem = document.getElementById('hostInfo');
+        if (hostInfoElem) {
+            const hostname = window.location.hostname;
+            const port = window.location.port;
+            const fullHost = port ? `${hostname}:${port}` : hostname;
+            const origin = window.location.origin;
+            hostInfoElem.innerHTML = `🌍 当前主机: ${fullHost}<br>📁 页面源: ${origin}`;
+        }
+
+        // 3. 时间戳: 服务器端第一次渲染时的时间 (嵌入静态基准 + 动态JS校准)
+        // 为了显示真实的“测试时刻”，我们显示当前客户端时间，同时标记第一次加载时间。
+        // 为了让用户感知到页面完全可用并且实时刷新无跨域问题，提供刷新按钮。
+        const timeElem = document.getElementById('liveTimestamp');
+        const refreshBtn = document.getElementById('refreshTimeBtn');
+        
+        // 获取服务器端初次响应参考时间 (基于页面生成时的日期，展示一个相对精准的基准，再用JS显示当前)
+        // 由于服务器发送的html中包含构建时的UTC时间，但不同时区不要紧，我们转换为本地可读格式。
+        // 为了更好的连通性测试，也可以在请求头没做额外动作下，显示页面解析完成时刻即可。
+        let currentTimeInterval = null;
+        
+        function updateTimeDisplay() {
+            if (!timeElem) return;
+            const now = new Date();
+            const formatted = now.toLocaleString('zh-CN', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false 
+            });
+            timeElem.textContent = formatted;
+        }
+        
+        // 立即更新一次时间戳，证明JS加载完好
+        updateTimeDisplay();
+        
+        // 可选的秒表级联刷新? 不需要太频繁，但用户手动刷新可以更新一次证明交互连通
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                updateTimeDisplay();
+                // 添加轻微的视觉反馈（临时改变按钮文本）
+                const originalText = refreshBtn.innerHTML;
+                refreshBtn.innerHTML = '✓ 已更新';
+                setTimeout(() => {
+                    refreshBtn.innerHTML = originalText;
+                }, 800);
+                // 同时控制台输出一条测试日志，不干扰页面
+                console.log('[连通测试] 手动刷新时间戳成功，页面JS交互正常，时间: ' + new Date().toISOString());
+            });
+        }
+        
+        // 额外增加一个页面加载完成的提示: 在控制台静默输出，方便排查但不占视觉
+        console.log('[连通测试] 页面完全加载 | 网络路径通畅 | 可正常访问');
+        
+        // 检测资源加载失败? 这是预防性的，表明没有任何图片或其他外部依赖缺失，不需要额外资源
+        // 还可以增加一个微小的背景验证: 判断本地存储是否可用但不影响体验
+        let storageTest = true;
+        try {
+            localStorage.setItem('__connectivity_test_ping', 'ok');
+            localStorage.removeItem('__connectivity_test_ping');
+        } catch(e) {
+            storageTest = false;
+            console.warn('本地存储不可用，但网络连通性不受影响');
+        }
+        
+        // 把存储测试结果悄悄加到一个tooltip? 为了显示完整性，可以在hostInfo附件加个小标识（非侵入）
+        if (hostInfoElem && !storageTest) {
+            const extraSpan = document.createElement('div');
+            extraSpan.style.fontSize = '0.7rem';
+            extraSpan.style.marginTop = '6px';
+            extraSpan.style.color = '#b5651e';
+            extraSpan.innerHTML = 'ℹ️ 本地存储API未启用(不影响网页访问)';
+            hostInfoElem.appendChild(extraSpan);
+        } else if (hostInfoElem && storageTest) {
+            const extraOk = document.createElement('div');
+            extraOk.style.fontSize = '0.7rem';
+            extraOk.style.marginTop = '6px';
+            extraOk.style.color = '#2c7a4d';
+            extraOk.innerHTML = '✓ 本地存储/会话功能正常，客户端环境可用';
+            hostInfoElem.appendChild(extraOk);
+        }
+        
+        // 可选: 显示当前网络类型/连接信息? 不需要复杂，单纯证明页面可交互即可。
+        // 为了额外展示连通鲁棒性，增加一个动态的计时测速? 保持简洁，不增加复杂请求，仅作为轻量测试。
+        
+        // 针对https 与 混合内容警告完全不涉及，确保所有样式图片都是内联。
+        // 额外细节：如果通过 file:// 协议打开，会显示主机信息为 "file"，但依然是可访问的测试。
+        // 友好提示: 对file协议显示相应提示。
+        if (window.location.protocol === 'file:') {
+            const fileNote = document.createElement('div');
+            fileNote.className = 'check-item';
+            fileNote.style.borderLeftColor = '#e68a2e';
+            fileNote.innerHTML = `
+                <div class="check-title">
+                    📂 本地文件访问
+                    <span class="success-mark">注意</span>
+                </div>
+                <div class="check-desc">
+                    当前通过 file:// 协议直接打开HTML文件，不代表HTTP服务器连通性，但页面自身DOM/CSS/JS运行正常。
+                    若需验证Web服务器连通性，请通过 http:// 或 https:// 访问本页面。
+                </div>
+            `;
+            const container = document.querySelector('.content');
+            const footer = document.querySelector('.footer-note');
+            if (container && footer) {
+                container.insertBefore(fileNote, footer);
+            }
+        }
+        
+        // 额外添加一个基于fetch的小型ping测试（可选，无跨域且不浪费请求，用来检测是否可以访问外部健康接口）
+        // 为了确保测试完全不引入额外依赖，但能证明网络栈完整，我们使用一个轻量级的空请求？因为可能会引起CORS或失败，但不需要太过深入。
+        // 不过简单ping当前页面自身? 其实是多余的，但可以增加一个通知说明外网连通性没有阻断（仅测试同源API即可）
+        // 我们发送一个 HEAD 请求到当前页面同路径下随机参数? 用户无需参与，但能表明 AJAX 引擎工作正常。
+        // 不干扰用户视觉，只在控制台打印结果，同时成功时在页面的某个区域用非常小的标记显示网络请求能力正常。
+        // 为了不增加误解，在时间戳下方显示一行微型“API回环测试”。
+        const pingTestContainer = document.createElement('div');
+        pingTestContainer.style.marginTop = '0.8rem';
+        pingTestContainer.style.fontSize = '0.7rem';
+        pingTestContainer.style.textAlign = 'right';
+        pingTestContainer.style.color = '#4c6a7a';
+        pingTestContainer.innerHTML = '🔍 后台连通性检测中...';
+        const timeItem = document.querySelector('.check-item:last-of-type');
+        if (timeItem && timeItem.parentNode) {
+            timeItem.appendChild(pingTestContainer);
+        }
+        
+        // 执行一个轻量fetch检测页面自身连通（简单探测后端能力）
+        // 如果同源策略无限制，直接ping当前页面URL加时间戳，确保网络层可以发起XHR请求。
+        fetch(window.location.pathname || '/', {
+            method: 'HEAD',
+            cache: 'no-store',
+            headers: { 'X-Test-Purpose': 'connectivity-check' }
+        }).then(response => {
+            if (response.ok || response.status < 500) {
+                pingTestContainer.innerHTML = '✅ 后台连通性验证通过 (XHR/Fetch 正常工作) &nbsp; ✓';
+                pingTestContainer.style.color = '#2c9f6e';
+            } else {
+                pingTestContainer.innerHTML = `⚠️ 后台响应状态${response.status}，但页面本身可用 (网络通路存在)`;
+                pingTestContainer.style.color = '#d98c2b';
+            }
+        }).catch(err => {
+            // 注意: 在跨域严格或者file协议时可能失败，但不影响页面显示的连通性（页面本身就是连通例子）
+            let errorMsg = '';
+            if (window.location.protocol === 'file:') {
+                errorMsg = 'file协议无法发送Fetch请求，但本地HTML展示正常；部署到服务器后将完全验证。';
+            } else {
+                errorMsg = 'Fetch额外检测未通过，但主页面加载正常 (可能是CORS或临时网络抖动)';
+            }
+            pingTestContainer.innerHTML = `ℹ️ ${errorMsg}`;
+            pingTestContainer.style.color = '#b56576';
+            console.warn('轻量连通测试fetch异常:', err);
+        });
+        
+        // 同时增加了一个小工具: 显示页面加载的性能指标? 不需要复杂。
+        // 增加一列: 展示完整的User-Agent? 不必要，但可以提供简单的环境确认。
+        const uaString = navigator.userAgent;
+        const uaShort = uaString.includes('Chrome') ? 'Chrome' : (uaString.includes('Safari') ? 'Safari' : (uaString.includes('Firefox') ? 'Firefox' : '浏览器'));
+        const envHint = document.createElement('div');
+        envHint.style.fontSize = '0.68rem';
+        envHint.style.marginTop = '0.5rem';
+        envHint.style.display = 'inline-flex';
+        envHint.style.gap = '6px';
+        envHint.style.width = '100%';
+        envHint.style.justifyContent = 'flex-end';
+        envHint.style.color = '#5d7e8c';
+        envHint.innerHTML = `🖥️ 客户端: ${uaShort} · 视口可用`;
+        const footerDiv = document.querySelector('.footer-note');
+        if (footerDiv) {
+            footerDiv.appendChild(envHint);
+        }
+        
+        // 增加CSS 确保所有内容都鲜明易懂
+        // 针对无痕模式或者任何拦截都不会影响基础判定: 页面已经成功展示元素。
+        
+        // 最后自动滚动到可视区域(不做强制), 重点: 所有内容均为纯静态+轻量动态，无任何第三方请求，确保测试可靠。
+        // 并且也可以让用户快速识别出“此页面可用”，标题与状态栏强烈显示。
+        
+        // 额外的URL参数echo测试（可选）: 显示页面参数? 不用过于复杂。
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramMsg = urlParams.toString();
+        if (paramMsg && paramMsg.length > 0) {
+            const paramDiv = document.createElement('div');
+            paramDiv.className = 'timestamp';
+            paramDiv.style.display = 'inline-block';
+            paramDiv.style.marginLeft = '0.5rem';
+            paramDiv.style.fontSize = '0.7rem';
+            paramDiv.innerHTML = `📎 参数: ${paramMsg.substring(0, 40)}${paramMsg.length > 40 ? '…' : ''}`;
+            const firstItem = document.querySelector('.check-title');
+            if (firstItem && firstItem.parentNode) {
+                firstItem.parentNode.querySelector('.check-desc')?.appendChild(paramDiv);
+            }
+        }
+        
+        // 确保页面标题提到连通测试
+        document.title = "连通正常 | 测试可达";
+    })();
+</script>
+</body>
+</html>
