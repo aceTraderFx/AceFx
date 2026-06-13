@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import HomePage from './pages/HomePage.vue'
 import RulePage from './pages/RulePage.vue'
@@ -22,7 +22,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory('/AceFx/'),
+  history: createWebHistory(),
   routes,
   scrollBehavior() {
     return { top: 0 }
