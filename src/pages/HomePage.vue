@@ -2,12 +2,12 @@
   <section class="page-card">
     <div class="rows-list">
       <div v-for="(item, idx) in rowsData" :key="idx" class="list-row">
-        <!-- 第一列：图片 -->
+        <!-- 第一列：图片（统一使用 imgUrl） -->
         <div class="row-image">
           <img :src="item.imgUrl" :alt="item.imgAlt" class="row-img" />
         </div>
-
-        <!-- 第二列：标题（带超链接+下划线）+ 描述 -->
+        
+        <!-- 第二列 -->
         <div class="row-content">
           <a :href="item.titleLink" class="row-title" target="_blank" rel="noopener noreferrer">
             {{ item.title }}
@@ -15,7 +15,7 @@
           <div class="row-desc">{{ item.shortDesc }}</div>
         </div>
 
-        <!-- 第三列：折扣码 + 复制图标 -->
+        <!-- 第三列：折扣码 + 复制 -->
         <div class="row-discount">
           <span class="discount-label">折扣码：</span>
           <span class="discount-code" @click="copyDiscountCode(item.discountCode, idx)">{{ item.discountCode }}</span>
@@ -23,12 +23,12 @@
           <span class="copy-tip" v-if="copiedIndex === idx">已复制!</span>
         </div>
 
-        <!-- 第四列：购买按钮（点击打开 buyLink） -->
+        <!-- 第四列：购买 -->
         <div class="row-buy">
           <button class="action-btn buy-btn" @click="handleBuy(item)">购买</button>
         </div>
 
-        <!-- 第五列：详细规则按钮（点击打开 rulesLink） -->
+        <!-- 第五列：详细规则 -->
         <div class="row-rules">
           <button class="action-btn rules-btn" @click="handleRules(item)">详细规则</button>
         </div>
@@ -45,24 +45,24 @@ const rowsData = [
     imgUrl: 'https://takeprofittrader.com/assets/mobile-logo.svg',
     imgAlt: 'takeprofittrader',
     title: 'TPT（takeprofittrader）',
-    titleLink: 'https://takeprofittrader.com/control-center/test',  // 可改为外部链接如 https://...
+    titleLink: 'https://takeprofittrader.com/control-center/test',
     shortDesc: '90%分成, 出入出金',
     discountCode: 'CDCD',
     buyLink: 'https://takeprofittrader.com/control-center/test',
     rulesLink: 'https://takeprofittrader.com/control-center/test'
   },
   {
-    imgUrl: '/src/img/lucid.png',
+    imgUrl: '/img/lucid.png',
     imgAlt: 'Lucid',
     title: 'Lucid',
     titleLink: 'https://lucidtrading.com/#plans',
     shortDesc: '90%分成, 规则友好',
     discountCode: 'SAVE20',
-    buyLink: 'https://lucidtrading.com/#plans',      // 临时占位，请替换为真实链接
+    buyLink: 'https://lucidtrading.com/#plans',
     rulesLink: 'https://lucidtrading.com/#plans'
   },
   {
-    imgUrl: '/src/img/alpha.png',
+    imgUrl: '/img/alpha.png',
     imgAlt: 'Alpha',
     title: 'Alpha',
     titleLink: 'https://app.alpha-futures.com/Assessments',
@@ -72,7 +72,7 @@ const rowsData = [
     rulesLink: 'https://app.alpha-futures.com/Assessments'
   },
   {
-    imgUrl: '/src/img/topstep.png',
+    imgUrl: '/img/topstep.png',
     imgAlt: 'TOPSTEP',
     title: 'TOPSTEP',
     titleLink: 'https://dashboard.topstep.com/dashboard/accounts/new?step=Account/4',
@@ -82,7 +82,7 @@ const rowsData = [
     rulesLink: 'https://dashboard.topstep.com/dashboard/accounts/new?step=Account'
   },
   {
-    imgUrl: '/src/img/fn.png',
+    imgUrl: '/img/fn.png',
     imgAlt: 'FundedNext',
     title: 'FundedNext',
     titleLink: 'https://app.fundednext.com/pricing',
@@ -108,7 +108,6 @@ const copyDiscountCode = async (code, idx) => {
   }
 }
 
-// 修改：购买按钮跳转到 buyLink
 const handleBuy = (item) => {
   if (item.buyLink && item.buyLink !== '#') {
     window.open(item.buyLink, '_blank')
@@ -117,7 +116,6 @@ const handleBuy = (item) => {
   }
 }
 
-// 修改：详细规则按钮跳转到 rulesLink
 const handleRules = (item) => {
   if (item.rulesLink && item.rulesLink !== '#') {
     window.open(item.rulesLink, '_blank')
@@ -128,7 +126,6 @@ const handleRules = (item) => {
 </script>
 
 <style scoped>
-/* 样式部分与之前完全相同，保持不变 */
 .page-card {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.18);
