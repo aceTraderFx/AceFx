@@ -41,13 +41,7 @@ const closeMenu = () => {
         </div>
 
         <nav class="nav-menu desktop-nav">
-          <router-link to="/" class="nav-link">首页</router-link>
-          <div class="nav-dropdown">
-            <button class="nav-link nav-dropdown-toggle" type="button">更多内容</button>
-            <div class="nav-dropdown-panel">
-              <router-link v-for="item in menuItems.filter((x) => x.to !== '/')" :key="item.to" :to="item.to" class="nav-link drop-link" @click="closeMenu">{{ item.label }}</router-link>
-            </div>
-          </div>
+          <router-link v-for="item in menuItems" :key="item.to" :to="item.to" class="nav-link" @click="closeMenu">{{ item.label }}</router-link>
         </nav>
 
         <div class="nav-right">
