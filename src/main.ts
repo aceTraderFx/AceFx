@@ -22,7 +22,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory('/AceFx/'),
   routes,
   scrollBehavior() {
     return { top: 0 }
