@@ -54,8 +54,8 @@ const toggleMenu = () => {
             class="menu-toggle"
             type="button"
             @click="toggleMenu"
-            @pointerenter="openMenu"
-            @pointerleave="closeMenu"
+            @mouseenter="openMenu"
+            @mouseleave="closeMenu"
             aria-label="菜单"
           >
             ☰
@@ -72,14 +72,15 @@ const toggleMenu = () => {
       <div
         v-if="mobileMenuOpen"
         class="mobile-nav-panel"
-        @pointerenter="cancelClose"
-        @pointerleave="closeMenu"
+        @mouseenter="cancelClose"
+        @mouseleave="closeMenu"
         @click.self="closeMenu"
       >
         <router-link v-for="item in menuItems" :key="item.to" :to="item.to" class="nav-link mobile-link" @click="closeMenu">{{ item.label }}</router-link>
       </div>
     </div>
     <div class="main-content">
+      
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />
