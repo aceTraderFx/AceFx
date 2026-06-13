@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>交易学习中心 - 首页</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+        /* 导航栏固定 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            border-bottom: 1px solid #e9eef3;
+            height: 68px;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+        .nav-left { width: 100px; }
+        .nav-menu {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+        .nav-link {
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #334155;
+            padding: 8px 4px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .nav-link:hover { color: #2563eb; }
+        .nav-link.router-link-active {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .nav-link.router-link-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2.5px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+        .nav-right {
+            width: 100px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+        }
+        .icon-btn-redpack {
+            background: #f1f5f9;
+            border: none;
+            cursor: pointer;
+            font-size: 1.65rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 40px;
+            transition: transform 0.2s;
+        }
+        .icon-btn-redpack:hover { transform: scale(1.08); background: #fee2e2; }
+        .icon-btn-discord {
+            background: #5865F2;
+            border: none;
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            color: white;
+        }
+        .icon-btn-discord i { color: white; font-size: 1.7rem; }
+        .icon-btn-discord:hover { transform: scale(1.08); background: #4752c4; }
+
+        /* 主内容区 */
+        .main-content { padding-top: 88px; min-height: 100vh; background: #f8fafc; }
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            padding: 40px 36px;
+            border: 1px solid #eef2f8;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.03);
+        }
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            background: linear-gradient(120deg, #1e293b, #2d3a4b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            border-left: 5px solid #3b82f6;
+            padding-left: 18px;
+        }
+        .soft-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #e2e8f0, #cbd5e1, #e2e8f0);
+            margin: 20px 0 8px;
+        }
+        .page-desc {
+            font-size: 1.05rem;
+            color: #334155;
+            background: #f9f9ff;
+            padding: 24px 28px;
+            border-radius: 24px;
+            margin-top: 20px;
+            border: 1px solid #eef2ff;
+        }
+        /* 首页专用样式（欢迎卡片） */
+        .welcome-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .welcome-card {
+            flex: 1;
+            min-width: 180px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #eef2ff;
+            transition: transform 0.2s;
+        }
+        .welcome-card:hover { transform: translateY(-4px); background: #fafcff; }
+        .welcome-card .emoji { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+        .welcome-card h3 { font-size: 1.2rem; margin-bottom: 8px; color: #0f172a; }
+        .welcome-card p { font-size: 0.9rem; color: #475569; }
+
+        /* 响应式 */
+        @media (max-width: 720px) {
+            .nav-menu { gap: 8px; }
+            .nav-link { font-size: 0.75rem; }
+            .page-container { padding: 28px 20px; margin: 0 16px; }
+            .welcome-card { min-width: 140px; }
+        }
+        /* 过渡动画 */
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease, transform 0.2s; }
+        .fade-enter-from { opacity: 0; transform: translateY(8px); }
+        .fade-leave-to { opacity: 0; transform: translateY(-4px); }
+    </style>
+  <script type="module" crossorigin src="./assets/index-yt_zx9hf.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+</html>
